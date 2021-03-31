@@ -2,11 +2,13 @@
   "name": "ado-auth",
   "displayName": "ADO Authenticator",
   "license": "ISC",
+  "main": "./cli.js",
   "scripts": {
     "dev": "esr index.ts",
     "build": "esbuild index.ts --bundle --outfile=cli.js --platform=node --target=es2017",
     "prepack": "yarn build"
   },
+  "bin": "./cli.js",
   "dependencies": {
     "esbuild": "^0.11.2",
     "koa": "^2.13.1",

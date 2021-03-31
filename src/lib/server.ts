@@ -1,9 +1,9 @@
+import http from "http";
 import Koa from "koa";
 import koaBody from "koa-body";
-import http from "http";
 import { Token } from "./types";
 
-export async function getToken() {
+export async function listenForTokenFromTheWebsite() {
   const result = await new Promise<Token>((resolve) => {
     const app = new Koa();
 

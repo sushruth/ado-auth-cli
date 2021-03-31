@@ -39,22 +39,22 @@ export function readrc() {
     }
   }
 
-  if(!npmRegistry) {
-    console.log("No custom npm registries found.")
+  if (!npmRegistry) {
+    console.log("No custom npm registries found.");
   } else {
-    console.log("Npmrc contains - ", npmRegistry)
+    console.log("Npmrc contains - ", npmRegistry);
   }
 
-  if(!yarnRegistry) {
-    console.log("No custom yarn registries found.")
+  if (!yarnRegistry) {
+    console.log("No custom yarn registries found.");
   } else {
-    console.log("Npmrc contains - ", yarnRegistry)
+    console.log("Npmrc contains - ", yarnRegistry);
   }
 
-  if(!yarn2Registry) {
-    console.log("No custom yarn2 registries found.")
+  if (!yarn2Registry) {
+    console.log("No custom yarn2 registries found.");
   } else {
-    console.log("Npmrc contains - ", yarn2Registry)
+    console.log("Npmrc contains - ", yarn2Registry);
   }
 
   console.log(npmRegistry, yarnRegistry, yarn2Registry);

@@ -1,5 +1,5 @@
 import open from "open";
-import { getToken } from "./lib/server";
+import { listenForTokenFromTheWebsite } from "./lib/server";
 
 const url = `https://app.vssps.visualstudio.com/oauth2/authorize
 ?client_id=54DC9EFD-680A-4B1E-8066-D669BC6A5D09
@@ -10,7 +10,7 @@ const url = `https://app.vssps.visualstudio.com/oauth2/authorize
 export async function auth() {
   open(url);
 
-  const token = await getToken();
+  const token = await listenForTokenFromTheWebsite();
 
   console.log(token);
 }
