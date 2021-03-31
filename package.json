@@ -1,5 +1,6 @@
 {
   "name": "ado-auth",
+  "version": "0.0.15",
   "displayName": "ADO Authenticator",
   "license": "ISC",
   "main": "./cli.js",

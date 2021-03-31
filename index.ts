@@ -14,7 +14,7 @@ export const authenticate = async () => {
   auth();
 };
 
-const cli = sade("ado-auth", true).version("0.0.14");
+const cli = sade("ado-auth", true).version("0.0.15");
 
 cli.action(authenticate);
 
