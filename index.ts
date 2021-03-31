@@ -1,49 +1,36 @@
+#!/usr/bin/env node
 import sade from "sade";
-import { auth } from "./src/auth";
-import { readrc } from "./src/readrc";
-import path from 'path'
-import fs from 'fs'
-import os from 'os'
+import { operate } from "./src/lib/operate";
+import { logger } from "./src/logger/logger";
 
-export * from "./src/auth";
-export * from "./src/lib/server";
-export * from "./src/lib/types";
-export * from "./src/readrc";
+const cli = sade("ado-auth", true)
+  .version("0.0.15")
+  .option("-d, --debug", "show debug logs");
 
-export const authenticate = async () => {
-
-  const rcPath = path.resolve(os.homedir(), '.ado-authrc.json');
-
-  if(fs.existsSync(rcPath)) {
-    // handle when file exists
-    const file = fs.readFileSync(rcPath, 'utf-8');
-    try {
-      const data = JSON.parse(file);
-      // handle when data is valid
-      // handle when auth hasnt expired
-      // handle when auth has expired - refresh the token
-      // handle when refresh token succeeds
-      // handle when refresh token fails
-    } catch (error) {
-      // go ahead get a token
-    }
+cli.action(async ({ debug }) => {
+  if (debug) {
+    logger.enableDebug();
   }
-
-  console.debug("Trying to get registry settings from npm and yarn");
-  const { npmRegistry, yarn2Registry, yarnRegistry } = readrc();
   
-  console.debug("Trying to get get auth token");
-  auth();
+  await operate();
+});
 
-  // augment auth token info to contain expiresOn
-  // write the `.ado-authrc.json` file without authToken
-  // Now go ahead and use that token to write a npmrc and yarnrc.yml
-};
-
-const cli = sade("ado-auth", true).version("0.0.15");
-
-cli.action(authenticate);
-
-if (require.main === module) {
+// DO NOT run if not in CLI or in CI environmentF
+if (require.main === module && !process.env.CI) {
   cli.parse(process.argv);
 }
+
+export * from "./src/api-stuff/auth";
+export * from "./src/api-stuff/server";
+export * from "./src/api-stuff/refetch";
+
+export * from "./src/lib/readConfig";
+export * from "./src/lib/types";
+export * from "./src/lib/operate";
+export * from "./src/lib/writeResult";
+
+export * from "./src/file-stuff/prepare";
+export * from "./src/file-stuff/prepare.types";
+
+export * from "./src/write-rc/npmrc";
+export * from "./src/write-rc/yarn2rc";

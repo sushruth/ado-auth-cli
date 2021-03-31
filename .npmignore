@@ -1,4 +1,6 @@
 index.ts,
+*.d.ts
 src/
 tsconfig.json
 *.log
+.npmignore
