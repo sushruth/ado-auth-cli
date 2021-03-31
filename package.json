@@ -5,8 +5,6 @@
   "license": "MIT",
   "main": "./cli.js",
   "scripts": {
-    "dev": "esr index.ts",
-    "pregentypes": "rimraf bin",
     "build": "tsc",
     "watch": "yarn build --watch",
     "prepack": "yarn build"
@@ -27,7 +25,6 @@
     "@types/node": "14.14.37",
     "@types/node-fetch": "2.5.8",
     "@types/sade": "1.7.2",
-    "rimraf": "^3.0.2",
     "typescript": "4.2.3"
   }
 }
