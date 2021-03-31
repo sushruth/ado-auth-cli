@@ -1,0 +1,25 @@
+{
+  "name": "ado-auth",
+  "displayName": "ADO Authenticator",
+  "license": "ISC",
+  "scripts": {
+    "dev": "esr index.ts",
+    "build": "esbuild index.ts --bundle --outfile=cli.js --platform=node --target=es2017",
+    "prepack": "yarn build"
+  },
+  "dependencies": {
+    "esbuild": "^0.11.2",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "node-fetch": "^2.6.1",
+    "open": "^8.0.4",
+    "sade": "^1.7.4"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.1",
+    "@types/node": "^14.14.37",
+    "@types/sade": "^1.7.2",
+    "esbuild-runner": "^1.3.2",
+    "typescript": "^4.2.3"
+  }
+}
