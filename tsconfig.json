@@ -8,5 +8,7 @@
     "declarationMap": false,
     "declaration": true,
     "strictNullChecks": true,
+    "types": ["node"],
+    "lib": ["es2017"]
   }
 }

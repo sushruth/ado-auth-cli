@@ -9,11 +9,11 @@ const commands = {
   yarn2: "yarn config get npmRegistryServer",
 };
 
-function getRegistry(command: keyof typeof commands) {
+function getRegistry(tool: keyof typeof commands) {
   let registry = "";
 
   try {
-    registry = execSync(commands[command], {
+    registry = execSync(commands[tool], {
       encoding: "utf8",
       cwd: process.cwd(),
     })
@@ -24,13 +24,13 @@ function getRegistry(command: keyof typeof commands) {
       registry = "";
     }
   } catch (error) {
-    console.warn(error);
+    logger.debug(`Running "${commands[tool]}" resulted in an error - `, error);
   }
 
   if (!registry) {
-    logger.debug(`No custom ${command} registry found.`);
+    logger.debug(`No custom ${tool} registry found.`);
   } else {
-    logger.debug(`${command} config contains this registry -> `, registry);
+    logger.debug(`${tool} config contains this registry -> `, registry);
   }
 
   return registry;

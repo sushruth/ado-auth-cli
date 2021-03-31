@@ -1,7 +1,16 @@
-index.ts,
+# dev stuff
+.yarn/
+.vscode/
+
+# some files
 *.d.ts
-src/
-tsconfig.json
 *.log
+tsconfig.json
 .npmignore
+
+# sources
+index.ts,
+src/
+
+# NOT ANY Markdowns
 !*.md
