@@ -16,4 +16,5 @@ export type PrepareReturn =
     }
   | {
       type: PrepareTypes.noop;
+      data: TokenStore;
     };

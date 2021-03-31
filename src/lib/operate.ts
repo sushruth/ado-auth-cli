@@ -14,7 +14,7 @@ export async function operate() {
   logger.debug("Trying to get registry settings from npm and yarn");
   const registries = readConfig();
 
-  if (!registries) {
+  if (!registries.size) {
     return logger.debug("No custom registries found. Skipping ado-auth");
   }
 
@@ -34,7 +34,7 @@ export async function operate() {
     token = await refetch(report.data, rcPath);
   } else if (report.type === PrepareTypes.noop) {
     logger.debug("Valid token exists");
-    return;
+    token = report.data;
   }
 
   if (token) {
@@ -42,14 +42,14 @@ export async function operate() {
 
     writeNpmrc({
       npmrcPath,
-      registries,
       token,
+      registries: new Set(registries),
     });
 
     writeYarn2rc({
-      registries,
+      yarnrcPath, 
       token,
-      yarnrcPath,
+      registries: new Set(registries),
     });
   }
 }

@@ -19,6 +19,7 @@ export function prepare(rcPath: string): PrepareReturn {
         // Nothing to do
         return {
           type: PrepareTypes.noop,
+          data
         };
       }
     } catch (error) {}

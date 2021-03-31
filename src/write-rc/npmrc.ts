@@ -14,8 +14,12 @@ const authTokenDelimiter = ":_authToken=";
 
 export function writeNpmrc({ npmrcPath, registries, token }: WriteNpmrcParams) {
   let npmrc = "";
+
+  logger.debug(`${registries.size} registries to be updated`);
+
   if (fs.existsSync(npmrcPath)) {
-    logger.debug("found npmrc in home directory");
+    logger.debug("found .npmrc in home directory");
+
     npmrc = fs.readFileSync(npmrcPath, "utf-8");
     for (const line of npmrc.split(/\n/)) {
       if (/^\/\//.test(line)) {
@@ -26,6 +30,7 @@ export function writeNpmrc({ npmrcPath, registries, token }: WriteNpmrcParams) {
         );
 
         if (matchingRegistry) {
+          logger.debug(`Adding a token to the "${matchingRegistry}" entry`);
           npmrc += url + ":_authToken=" + token.access_token + "\n";
           registries.delete(matchingRegistry);
         } else {
@@ -33,6 +38,8 @@ export function writeNpmrc({ npmrcPath, registries, token }: WriteNpmrcParams) {
         }
       }
     }
+  } else {
+    logger.debug("No .npmrc in home directory");
   }
 
   // if registries are still left

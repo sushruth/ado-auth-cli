@@ -1,18 +1,21 @@
-import { TokenStore } from "../lib/types";
+import fetch from "node-fetch";
+import { AdoAuthApiResponse, TokenStore } from "../lib/types";
 import { writeResult } from "../lib/writeResult";
-import { listenForTokenFromTheWebsite } from "./server";
-import open from "open";
+import { logger } from "../logger/logger";
 
 export async function refetch(data: TokenStore, rcPath: string) {
-  open(`https://ado-auth.vercel.app/api/refresh?token=${data.refresh_token}`);
+  const result: AdoAuthApiResponse = await fetch(
+    `https://ado-auth.vercel.app/api/refresh?token=${data.refresh_token}`
+  ).then((res) => res.json());
 
-  const result = await listenForTokenFromTheWebsite();
-
-  if (result.access_token && result.refresh_token && result.expires_in) {
-    writeResult(rcPath, result);
+  if (result.code === "SUCCESS") {
+    logger.debug("Received refreshed token succesfully.");
+    writeResult(rcPath, result.body);
+    return result.body;
   } else {
-    console.error("Something went wrong while fetching refresh token");
+    logger.debug(
+      "Something went wrong while fetching refresh token - ",
+      result
+    );
   }
-
-  return result;
 }

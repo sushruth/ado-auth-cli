@@ -159,6 +159,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/open@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "@types/open@npm:6.2.1"
+  dependencies:
+    open: "*"
+  checksum: 7395a108b56a8e101b73d807a0368ba82bd935cf1a13373574cb24454e0a35922a32c6348acbdcd45b1c7cbeed0ac75a0059f6046471f0a3e094380bdbf62635
+  languageName: node
+  linkType: hard
+
 "@types/qs@npm:*":
   version: 6.9.6
   resolution: "@types/qs@npm:6.9.6"
@@ -210,6 +219,7 @@ __metadata:
     "@types/koa": 2.13.1
     "@types/node": 14.14.37
     "@types/node-fetch": 2.5.8
+    "@types/open": ^6.2.1
     "@types/sade": 1.7.2
     dayjs: 1.10.4
     js-yaml: ^4.0.0
@@ -708,7 +718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"open@npm:8.0.4":
+"open@npm:*, open@npm:8.0.4":
   version: 8.0.4
   resolution: "open@npm:8.0.4"
   dependencies:

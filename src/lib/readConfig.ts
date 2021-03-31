@@ -9,11 +9,20 @@ const commands = {
   yarn2: "yarn config get npmRegistryServer",
 };
 
-function getRegistry(tool: keyof typeof commands) {
+function getRegistry(tool: Exclude<keyof typeof commands, "yarn2">) {
   let registry = "";
 
+  let toolToUse: keyof typeof commands = tool;
+
+  if (tool === "yarn") {
+    const version = execSync("yarn -v", { encoding: "utf8" })?.trim();
+    if (/2\.\d*\.\d*/i.test(version)) {
+      toolToUse = "yarn2";
+    }
+  }
+
   try {
-    registry = execSync(commands[tool], {
+    registry = execSync(commands[toolToUse], {
       encoding: "utf8",
       cwd: process.cwd(),
     })
@@ -24,13 +33,16 @@ function getRegistry(tool: keyof typeof commands) {
       registry = "";
     }
   } catch (error) {
-    logger.debug(`Running "${commands[tool]}" resulted in an error - `, error);
+    logger.debug(
+      `Running "${commands[toolToUse]}" resulted in an error - `,
+      error
+    );
   }
 
   if (!registry) {
-    logger.debug(`No custom ${tool} registry found.`);
+    logger.debug(`No custom ${toolToUse} registry found.`);
   } else {
-    logger.debug(`${tool} config contains this registry -> `, registry);
+    logger.debug(`${toolToUse} config contains this registry -> `, registry);
   }
 
   return registry;
@@ -39,7 +51,6 @@ function getRegistry(tool: keyof typeof commands) {
 export function readConfig() {
   let npmRegistry = getRegistry("npm");
   let yarnRegistry = getRegistry("yarn");
-  let yarn2Registry = getRegistry("yarn2");
 
-  return new Set([npmRegistry, yarnRegistry, yarn2Registry].filter(Boolean));
+  return new Set([npmRegistry, yarnRegistry].filter(Boolean));
 }

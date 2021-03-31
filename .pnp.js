@@ -41,6 +41,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/koa", "npm:2.13.1"],
             ["@types/node", "npm:14.14.37"],
             ["@types/node-fetch", "npm:2.5.8"],
+            ["@types/open", "npm:6.2.1"],
             ["@types/sade", "npm:1.7.2"],
             ["dayjs", "npm:1.10.4"],
             ["js-yaml", "npm:4.0.0"],
@@ -233,6 +234,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["@types/open", [
+        ["npm:6.2.1", {
+          "packageLocation": "./.yarn/cache/@types-open-npm-6.2.1-dfd4f01e78-7395a108b5.zip/node_modules/@types/open/",
+          "packageDependencies": [
+            ["@types/open", "npm:6.2.1"],
+            ["open", "npm:8.0.4"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["@types/qs", [
         ["npm:6.9.6", {
           "packageLocation": "./.yarn/cache/@types-qs-npm-6.9.6-2fc5ce36d4-a5f3c4f6ad.zip/node_modules/@types/qs/",
@@ -292,6 +303,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/koa", "npm:2.13.1"],
             ["@types/node", "npm:14.14.37"],
             ["@types/node-fetch", "npm:2.5.8"],
+            ["@types/open", "npm:6.2.1"],
             ["@types/sade", "npm:1.7.2"],
             ["dayjs", "npm:1.10.4"],
             ["js-yaml", "npm:4.0.0"],

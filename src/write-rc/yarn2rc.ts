@@ -1,5 +1,6 @@
 import fs from "fs";
 import yaml from "js-yaml";
+import { POINT_CONVERSION_COMPRESSED } from "node:constants";
 import os from "os";
 import path from "path";
 import { Token, YarnRcRegistryPart } from "../lib/types";
@@ -16,6 +17,7 @@ export function writeYarn2rc({ registries, token, yarnrcPath }: Yarn2RcParams) {
 
   if (fs.existsSync(yarnrcPath)) {
     logger.debug("Found .yarnrc.yml in home directory");
+
     yarnrc = yaml.load(
       fs.readFileSync(yarnrcPath, "utf-8")
     ) as YarnRcRegistryPart; // assume no throw
@@ -24,29 +26,34 @@ export function writeYarn2rc({ registries, token, yarnrcPath }: Yarn2RcParams) {
       for (const reg of registries) {
         const yarnConfigOfInterest = yarnrc.npmRegistries[reg];
         if (yarnConfigOfInterest) {
+          logger.debug(`Adding a token to the "${reg}" entry`);
           yarnConfigOfInterest.npmAuthToken = token.access_token;
           registries.delete(reg);
         }
       }
     }
+  } else {
+    logger.debug("No .yarnrc.yml found in home directory");
   }
 
-  const yarnRcDump = [...registries].reduce(
-    (acc, value) => {
-      return {
-        npmRegistries: {
-          ...acc.npmRegistries,
-          [value]: {
-            npmAlwaysAuth: true,
-            npmAuthToken: token?.access_token,
-          },
+  const yarnRcDump = registries.size
+    ? [...registries].reduce(
+        (acc, value) => {
+          return {
+            npmRegistries: {
+              ...acc.npmRegistries,
+              [value]: {
+                npmAlwaysAuth: true,
+                npmAuthToken: token?.access_token,
+              },
+            },
+          };
         },
-      };
-    },
-    {
-      npmRegistries: {},
-    } as YarnRcRegistryPart
-  );
+        {
+          npmRegistries: {},
+        } as YarnRcRegistryPart
+      )
+    : undefined;
 
   if (yarnRcDump) {
     const contents = yaml.dump({
