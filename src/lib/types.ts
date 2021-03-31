@@ -45,7 +45,7 @@ export type AdoAuthApiResponse =
       body: Token;
     };
 
-export type TokenStore = Omit<Token, "access_token"> & {
+export type TokenStore = Token & {
   expires_on: string;
 };
 

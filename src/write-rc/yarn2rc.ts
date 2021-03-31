@@ -44,7 +44,7 @@ export function writeYarn2rc({ registries, token, yarnrcPath }: Yarn2RcParams) {
               ...acc.npmRegistries,
               [value]: {
                 npmAlwaysAuth: true,
-                npmAuthToken: token?.access_token,
+                npmAuthToken: token.access_token,
               },
             },
           };

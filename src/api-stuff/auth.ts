@@ -1,6 +1,6 @@
 import open from "open";
 import { listenForTokenFromTheWebsite } from "./server";
-import { writeResult } from "../lib/writeResult";
+import { writeAdoRc } from "../lib/writeAdoRc";
 
 const url = `https://app.vssps.visualstudio.com/oauth2/authorize
 ?client_id=54DC9EFD-680A-4B1E-8066-D669BC6A5D09
@@ -14,7 +14,7 @@ export async function auth(rcPath: string) {
   const result = await listenForTokenFromTheWebsite();
 
   if (result.access_token && result.refresh_token && result.expires_in) {
-    writeResult(rcPath, result);
+    writeAdoRc(rcPath, result);
   } else {
     console.error("Something went wrong while fetching refresh token");
   }

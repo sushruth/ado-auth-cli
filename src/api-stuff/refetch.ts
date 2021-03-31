@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { AdoAuthApiResponse, TokenStore } from "../lib/types";
-import { writeResult } from "../lib/writeResult";
+import { writeAdoRc } from "../lib/writeAdoRc";
 import { logger } from "../logger/logger";
 
 export async function refetch(data: TokenStore, rcPath: string) {
@@ -10,7 +10,7 @@ export async function refetch(data: TokenStore, rcPath: string) {
 
   if (result.code === "SUCCESS") {
     logger.debug("Received refreshed token succesfully.");
-    writeResult(rcPath, result.body);
+    writeAdoRc(rcPath, result.body);
     return result.body;
   } else {
     logger.debug(

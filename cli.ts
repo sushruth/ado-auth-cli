@@ -4,7 +4,7 @@ import { operate } from "./src/lib/operate";
 import { logger } from "./src/logger/logger";
 
 const cli = sade("ado-auth", true)
-  .version("0.1.0")
+  .version("0.1.9")
   .option("-d, --debug", "show debug logs");
 
 cli.action(async ({ debug }) => {
@@ -27,7 +27,7 @@ export * from "./src/api-stuff/refetch";
 export * from "./src/lib/readConfig";
 export * from "./src/lib/types";
 export * from "./src/lib/operate";
-export * from "./src/lib/writeResult";
+export * from "./src/lib/writeAdoRc";
 
 export * from "./src/file-stuff/prepare";
 export * from "./src/file-stuff/prepare.types";
