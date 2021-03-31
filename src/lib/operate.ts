@@ -1,6 +1,6 @@
 import os from "os";
 import path from "path";
-import { auth } from "../..";
+import { auth } from "../api-stuff/auth";
 import { refetch } from "../api-stuff/refetch";
 import { prepare } from "../file-stuff/prepare";
 import { PrepareTypes } from "../file-stuff/prepare.types";
