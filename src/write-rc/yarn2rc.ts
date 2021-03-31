@@ -22,6 +22,10 @@ export function writeYarn2rc({ registries, token, yarnrcPath }: Yarn2RcParams) {
       fs.readFileSync(yarnrcPath, "utf-8")
     ) as YarnRcRegistryPart; // assume no throw
 
+    if (!yarnrc.npmRegistries) {
+      yarnrc.npmRegistries = {};
+    }
+
     if (yarnrc && typeof yarnrc === "object") {
       for (const reg of registries) {
         const yarnConfigOfInterest = yarnrc.npmRegistries[reg];

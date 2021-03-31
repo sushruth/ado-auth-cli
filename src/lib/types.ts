@@ -50,7 +50,7 @@ export type TokenStore = Token & {
 };
 
 export type YarnRcRegistryPart = {
-  npmRegistries: {
+  npmRegistries?: {
     [K in string]?: {
       npmAlwaysAuth?: boolean;
       npmAuthToken?: string;
