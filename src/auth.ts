@@ -1,5 +1,8 @@
 import open from "open";
 import { listenForTokenFromTheWebsite } from "./lib/server";
+import fs from 'fs'
+import path from 'path'
+import os from 'os'
 
 const url = `https://app.vssps.visualstudio.com/oauth2/authorize
 ?client_id=54DC9EFD-680A-4B1E-8066-D669BC6A5D09
@@ -12,5 +15,7 @@ export async function auth() {
 
   const token = await listenForTokenFromTheWebsite();
 
-  console.log(token);
+  console.log('THIS IS WHAT I RECEIVED - ', token);
+
+  // fs.writeFileSync(path.resolve(os.homedir()))
 }

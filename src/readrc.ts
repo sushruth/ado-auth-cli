@@ -57,5 +57,9 @@ export function readrc() {
     console.log("Npmrc contains - ", yarn2Registry);
   }
 
-  console.log(npmRegistry, yarnRegistry, yarn2Registry);
+  return {
+    npmRegistry,
+    yarnRegistry,
+    yarn2Registry,
+  };
 }

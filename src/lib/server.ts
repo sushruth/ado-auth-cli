@@ -4,7 +4,12 @@ import koaBody from "koa-body";
 import { Token } from "./types";
 
 export async function listenForTokenFromTheWebsite() {
-  const result = await new Promise<Token>((resolve) => {
+  return new Promise<Token>((resolve, reject) => {
+    setTimeout(() => {
+      console.error("Could not retrieve token within 60s");
+      reject(new Error("Token retrieval took too long"));
+    }, 60000);
+
     const app = new Koa();
 
     app.use(
@@ -16,21 +21,22 @@ export async function listenForTokenFromTheWebsite() {
     let server: http.Server | undefined;
 
     app.use(async (ctx) => {
-      if (/options/i.test(ctx.method)) {
-        ctx.set("Access-Control-Allow-Origin", "https://ado-auth.vercel.app");
-        ctx.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-        ctx.set("Access-Control-Allow-Headers", "content-type");
-        ctx.status = 200;
-        ctx.res.end();
-      } else {
+      ctx.set("Access-Control-Allow-Origin", "https://ado-auth.vercel.app");
+      ctx.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+      ctx.set("Access-Control-Allow-Headers", "content-type");
+
+      ctx.status = 200;
+
+      if (/POST/i.test(ctx.method)) {
         const body = ctx.request.body;
-        console.log("Got body", body);
-        ctx.body = { status: "OK" };
-        ctx.status = 200;
-        ctx.res.end();
-        setImmediate(() => server?.close());
-        resolve(body);
+        if (body.access_token) {
+          ctx.body = { status: "OK" };
+          resolve(body);
+          setImmediate(() => server?.close());
+        }
       }
+
+      ctx.res.end();
     });
 
     server = app.listen(35287);
