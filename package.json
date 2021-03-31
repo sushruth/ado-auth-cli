@@ -1,6 +1,6 @@
 {
   "name": "ado-auth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "ADO Authenticator",
   "license": "MIT",
   "main": "./cli.js",
