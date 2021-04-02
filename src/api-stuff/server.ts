@@ -1,7 +1,8 @@
-import http, { IncomingMessage } from "http";
+import http from "http";
+import { SERVER_PORT, SERVER_TIMEOUT } from "../lib/constants";
 import { Token } from "../lib/types";
 import { logger } from "../logger/logger";
-import { SERVER_PORT, SERVER_TIMEOUT } from "../lib/constants";
+import { getJsonBody } from "./getJsonBody";
 
 export function listenForTokenFromTheWebsite() {
   return new Promise<Token>((resolve, reject) => {
@@ -51,25 +52,5 @@ export function listenForTokenFromTheWebsite() {
     }, SERVER_TIMEOUT);
 
     server.listen(SERVER_PORT);
-  });
-}
-
-async function getJsonBody<D>(req: IncomingMessage) {
-  return new Promise<D | undefined>(async (resolve, reject) => {
-    let body = [];
-    let jsonBody: D | undefined;
-
-    req
-      .on("data", (chunk: never) => body.push(chunk))
-      .on("end", () => {
-        jsonBody = JSON.parse(Buffer.concat(body).toString());
-
-        if (jsonBody) {
-          resolve(jsonBody);
-        } else {
-          resolve(undefined);
-        }
-      })
-      .on("error", reject);
   });
 }

@@ -1,4 +1,4 @@
-import open from "open";
+import open from "opener";
 import { listenForTokenFromTheWebsite } from "./server";
 import { writeAdoRc } from "../lib/writeAdoRc";
 
