@@ -1,6 +1,6 @@
 {
   "name": "ado-auth",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "displayName": "ADO Authenticator",
   "license": "MIT",
   "main": "./cli.js",
@@ -8,6 +8,10 @@
     "build": "pwsh ./tools/build.ps1",
     "dev": "pwsh ./tools/dev.ps1",
     "prepack": "yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sushruth/ado-auth-cli"
   },
   "bin": "./bin/cli.js",
   "dependencies": {
