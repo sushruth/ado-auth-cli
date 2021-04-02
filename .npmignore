@@ -6,11 +6,11 @@ tools/
 # some files
 *.d.ts
 *.log
-tsconfig.json
 .npmignore
+.gitignore
 
 # sources
-index.ts,
+cli.ts,
 src/
 
 # NOT ANY Markdowns
