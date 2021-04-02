@@ -4,7 +4,7 @@ import { operate } from "./src/lib/operate";
 import { logger } from "./src/logger/logger";
 
 const cli = sade("ado-auth", true)
-  .version("0.1.9")
+  .version(process.env.ADO_AUTH_VERSION || 'latest')
   .option("-d, --debug", "show debug logs");
 
 cli.action(async ({ debug }) => {

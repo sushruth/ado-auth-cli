@@ -1,6 +1,7 @@
 # dev stuff
 .yarn/
 .vscode/
+tools/
 
 # some files
 *.d.ts

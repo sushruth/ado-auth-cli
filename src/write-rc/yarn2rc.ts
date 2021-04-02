@@ -1,6 +1,5 @@
 import fs from "fs";
 import yaml from "js-yaml";
-import { POINT_CONVERSION_COMPRESSED } from "node:constants";
 import os from "os";
 import path from "path";
 import { Token, YarnRcRegistryPart } from "../lib/types";
@@ -57,19 +56,19 @@ export function writeYarn2rc({ registries, token, yarnrcPath }: Yarn2RcParams) {
           npmRegistries: {},
         } as YarnRcRegistryPart
       )
-    : undefined;
+    : {
+        npmRegistries: {},
+      };
 
-  if (yarnRcDump) {
-    const contents = yaml.dump({
-      npmRegistries: {
-        ...yarnRcDump.npmRegistries,
-        ...yarnrc.npmRegistries,
-      },
-    } as YarnRcRegistryPart);
+  const contents = yaml.dump({
+    npmRegistries: {
+      ...yarnRcDump.npmRegistries,
+      ...yarnrc.npmRegistries,
+    },
+  } as YarnRcRegistryPart);
 
-    if (contents) {
-      logger.debug("Writing ~/.yarnrc.yml");
-      fs.writeFileSync(path.resolve(os.homedir(), ".yarnrc.yml"), contents);
-    }
+  if (contents) {
+    logger.debug("Writing ~/.yarnrc.yml");
+    fs.writeFileSync(path.resolve(os.homedir(), ".yarnrc.yml"), contents);
   }
 }

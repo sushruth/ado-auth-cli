@@ -1,57 +1,75 @@
-import http from "http";
-import Koa from "koa";
-import body from "koa-json-body";
+import http, { IncomingMessage } from "http";
 import { Token } from "../lib/types";
 import { logger } from "../logger/logger";
+import { SERVER_PORT, SERVER_TIMEOUT } from "../lib/constants";
 
-const app = new Koa();
-
-export async function listenForTokenFromTheWebsite() {
+export function listenForTokenFromTheWebsite() {
   return new Promise<Token>((resolve, reject) => {
-    const timeoutToReject = setTimeout(() => {
-      console.error("Could not retrieve token within 60s");
-      reject(new Error("Token retrieval took too long"));
-    }, 60000);
+    const server = http.createServer(async (req, res) => {
+      if (!req.method) {
+        // Probably just for typing. Do not respond if there is no method.
+        return res.end();
+      }
 
-    app.use(
-      body({
-        limit: "5kb",
-      })
-    );
+      logger.debug(`Received ${req.method} request.`);
 
-    let server: http.Server | undefined;
+      res.setHeader(
+        "Access-Control-Allow-Origin",
+        "https://ado-auth.vercel.app"
+      );
+      res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "content-type");
 
-    logger.debug(
-      "Starting server at http://localhost:35287 and listening to POST request from the ado-auth site"
-    );
+      if (/POST/i.test(req.method)) {
+        const token = await getJsonBody<Token>(req);
 
-    server = app.listen(35287);
-
-    app.use(async (ctx) => {
-      logger.debug(`Received ${ctx.method} request.`);
-
-      ctx.set("Access-Control-Allow-Origin", "https://ado-auth.vercel.app");
-      ctx.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-      ctx.set("Access-Control-Allow-Headers", "content-type");
-
-      ctx.status = 200;
-
-      if (/POST/i.test(ctx.method)) {
-        const body = ctx.request.body;
-
-        if (body.access_token) {
+        if (token && token.access_token) {
           logger.debug("Received the token");
-
-          ctx.body = { status: "OK" };
-          resolve(body);
+          res.setHeader("Content-Type", "application/json");
+          resolve(token);
           clearTimeout(timeoutToReject);
 
-          logger.debug("Closing the server");
-          server?.close();
+          logger.debug("Responding back and closing the server");
+          res.end(JSON.stringify({ status: "OK" }));
+          return server.close();
         }
       }
 
-      ctx.res.end();
+      res.writeHead(200);
+
+      return res.end();
     });
+
+    logger.debug(
+      `Starting server at http://localhost:${SERVER_PORT} and listening to POST request from the ado-auth site`
+    );
+
+    const timeoutToReject = setTimeout(() => {
+      console.error("Could not retrieve token within 60s");
+      reject(new Error("Token retrieval took too long"));
+      return server.close();
+    }, SERVER_TIMEOUT);
+
+    server.listen(SERVER_PORT);
+  });
+}
+
+async function getJsonBody<D>(req: IncomingMessage) {
+  return new Promise<D | undefined>(async (resolve, reject) => {
+    let body = [];
+    let jsonBody: D | undefined;
+
+    req
+      .on("data", (chunk: never) => body.push(chunk))
+      .on("end", () => {
+        jsonBody = JSON.parse(Buffer.concat(body).toString());
+
+        if (jsonBody) {
+          resolve(jsonBody);
+        } else {
+          resolve(undefined);
+        }
+      })
+      .on("error", reject);
   });
 }
