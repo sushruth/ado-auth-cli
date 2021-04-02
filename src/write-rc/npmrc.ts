@@ -22,8 +22,14 @@ export function writeNpmrc({ npmrcPath, registries, token }: WriteNpmrcParams) {
 
     npmrc = fs.readFileSync(npmrcPath, "utf-8");
     for (const line of npmrc.split(/\n/)) {
-      if (/^\/\//.test(line)) {
-        // starts with '//'
+      /**
+       * Yarn 2 seems to add another entry to .npmrc for each URL with the trailing `registry/` removed.
+       * Need to address that.
+       */
+      const lineWithoutTrailingRegistry = line.replace(/\/registry\/?$/im, "/");
+
+      if (/^\/\//.test(line) || /^\/\//.test(lineWithoutTrailingRegistry)) {
+        // starts with `//`
         const [url] = line.split(authTokenDelimiter);
         const matchingRegistry = [...registries].find((reg) =>
           reg.startsWith(url)
@@ -31,7 +37,15 @@ export function writeNpmrc({ npmrcPath, registries, token }: WriteNpmrcParams) {
 
         if (matchingRegistry) {
           logger.debug(`Adding a token to the "${matchingRegistry}" entry`);
-          npmrc += url + ":_authToken=" + token.access_token + "\n";
+          npmrc += `${url}${authTokenDelimiter}${token.access_token}\n`;
+
+          let urlWithoutTrailingRegistry = url.replace(/\/registry\/?$/im, "/");
+
+          if (urlWithoutTrailingRegistry !== url) {
+            // If there is a trailing `/registry/`
+            npmrc += `${urlWithoutTrailingRegistry}${authTokenDelimiter}${token.access_token}\n`;
+          }
+          
           registries.delete(matchingRegistry);
         } else {
           npmrc += line + "\n";
