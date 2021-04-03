@@ -1,17 +1,21 @@
 import open from "opener";
 import { listenForTokenFromTheWebsite } from "./server";
 import { writeAdoRc } from "../lib/writeAdoRc";
+import { CliOptions } from "../lib/types";
+import { CLIENT_ID } from "../lib/constants";
+import { URL } from "url";
 
-const url = `https://app.vssps.visualstudio.com/oauth2/authorize
-?client_id=54DC9EFD-680A-4B1E-8066-D669BC6A5D09
-&response_type=Assertion
-&scope=vso.packaging
-&redirect_uri=https://ado-auth.vercel.app/api/auth`.trim();
+function getUrl(clientId = CLIENT_ID, host: string) {
+  const hostUrl = new URL(host);
+  hostUrl.pathname = "/api/auth";
 
-export async function auth(rcPath: string) {
-  open(url);
+  return `https://app.vssps.visualstudio.com/oauth2/authorize?client_id=${clientId}&response_type=Assertion&scope=vso.packaging&redirect_uri=${hostUrl.href}`;
+}
 
-  const result = await listenForTokenFromTheWebsite();
+export async function auth(rcPath: string, config: CliOptions) {
+  open(getUrl(config.clientId, config.host));
+
+  const result = await listenForTokenFromTheWebsite(config);
 
   if (result.access_token && result.refresh_token && result.expires_in) {
     writeAdoRc(rcPath, result);

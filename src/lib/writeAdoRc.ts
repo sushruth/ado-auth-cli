@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import fs from "fs";
-import { Token, TokenStore } from "./types";
+import { Token } from "./types";
 
 export function writeAdoRc(rcPath: string, response: Token) {
   fs.writeFileSync(
@@ -11,7 +11,7 @@ export function writeAdoRc(rcPath: string, response: Token) {
         expires_on: dayjs()
           .add(Number(response.expires_in), "seconds")
           .toISOString(),
-      } as TokenStore,
+      },
       null,
       "  "
     ),

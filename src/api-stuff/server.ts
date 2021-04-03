@@ -1,10 +1,16 @@
 import http from "http";
+import ora from "ora";
 import { SERVER_PORT, SERVER_TIMEOUT } from "../lib/constants";
-import { Token } from "../lib/types";
+import { CliOptions, Token } from "../lib/types";
 import { logger } from "../logger/logger";
 import { getJsonBody } from "./getJsonBody";
 
-export function listenForTokenFromTheWebsite() {
+export function listenForTokenFromTheWebsite(config: CliOptions) {
+  const spinner = ora({
+    isEnabled: logger.debugEnabled,
+    prefixText: logger.debugPrefix,
+  });
+
   return new Promise<Token>((resolve, reject) => {
     const server = http.createServer(async (req, res) => {
       if (!req.method) {
@@ -12,12 +18,7 @@ export function listenForTokenFromTheWebsite() {
         return res.end();
       }
 
-      logger.debug(`Received ${req.method} request.`);
-
-      res.setHeader(
-        "Access-Control-Allow-Origin",
-        "https://ado-auth.vercel.app"
-      );
+      res.setHeader("Access-Control-Allow-Origin", config.host);
       res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
       res.setHeader("Access-Control-Allow-Headers", "content-type");
 
@@ -25,13 +26,12 @@ export function listenForTokenFromTheWebsite() {
         const token = await getJsonBody<Token>(req);
 
         if (token && token.access_token) {
-          logger.debug("Received the token");
           res.setHeader("Content-Type", "application/json");
           resolve(token);
           clearTimeout(timeoutToReject);
-
-          logger.debug("Responding back and closing the server");
           res.end(JSON.stringify({ status: "OK" }));
+
+          spinner.succeed("Received the token");
           return server.close();
         }
       }
@@ -41,16 +41,16 @@ export function listenForTokenFromTheWebsite() {
       return res.end();
     });
 
-    logger.debug(
-      `Starting server at http://localhost:${SERVER_PORT} and listening to POST request from the ado-auth site`
-    );
-
     const timeoutToReject = setTimeout(() => {
-      console.error("Could not retrieve token within 60s");
+      spinner.fail("Could not retrieve token within 60 seconds");
+
       reject(new Error("Token retrieval took too long"));
+
       return server.close();
     }, SERVER_TIMEOUT);
 
+    logger.debug(`Started server at http://localhost:${SERVER_PORT}`);
     server.listen(SERVER_PORT);
+    spinner.start("listening to POST request from the ado-auth site");
   });
 }

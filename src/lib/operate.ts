@@ -8,9 +8,9 @@ import { logger } from "../logger/logger";
 import { writeNpmrc } from "../write-rc/npmrc";
 import { writeYarn2rc } from "../write-rc/yarn2rc";
 import { readConfig } from "./readConfig";
-import { Token } from "./types";
+import { CliOptions, Token } from "./types";
 
-export async function operate() {
+export async function operate(config: CliOptions) {
   logger.debug("Trying to get registry settings from npm and yarn");
   const registries = readConfig();
 
@@ -28,10 +28,10 @@ export async function operate() {
 
   if (report.type === PrepareTypes.fetch) {
     logger.debug("Trying to get auth token");
-    token = await auth(rcPath);
+    token = await auth(rcPath, config);
   } else if (report.type === PrepareTypes.refetch) {
     logger.debug("Trying to refetch auth token");
-    token = await refetch(report.data, rcPath);
+    token = await refetch(report.data, rcPath, config);
   } else if (report.type === PrepareTypes.noop) {
     logger.debug("Valid token exists");
     token = report.data;
@@ -47,7 +47,7 @@ export async function operate() {
     });
 
     writeYarn2rc({
-      yarnrcPath, 
+      yarnrcPath,
       token,
       registries: new Set(registries),
     });

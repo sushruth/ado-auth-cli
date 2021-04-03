@@ -57,3 +57,10 @@ export type YarnRcRegistryPart = {
     };
   };
 };
+
+export type CliOptions = {
+  debug?: boolean;
+  port: string;
+  host: string;
+  clientId: string;
+};

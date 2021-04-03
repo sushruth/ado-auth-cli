@@ -1,17 +1,20 @@
+import chalk from "chalk";
+
 class Logger {
-  private _debugEnabled = false;
+  debugEnabled = false;
+  debugPrefix = chalk.gray("[ado-auth]");
 
   enableDebug = () => {
-    this._debugEnabled = true;
+    this.debugEnabled = true;
   };
 
   disableDebug = () => {
-    this._debugEnabled = false;
+    this.debugEnabled = false;
   };
 
   debug = (message?: unknown, ...optionalParams: unknown[]) => {
-    if (this._debugEnabled) {
-      console.debug(message, ...optionalParams);
+    if (this.debugEnabled) {
+      console.debug(this.debugPrefix, message, ...optionalParams);
     }
   };
 }

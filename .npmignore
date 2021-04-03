@@ -10,7 +10,6 @@ tools/
 .gitignore
 
 # sources
-cli.ts,
 src/
 
 # NOT ANY Markdowns

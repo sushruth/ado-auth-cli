@@ -52,5 +52,20 @@ export function readConfig() {
   let npmRegistry = getRegistry("npm");
   let yarnRegistry = getRegistry("yarn");
 
-  return new Set([npmRegistry, yarnRegistry].filter(Boolean));
+  return new Set(
+    [...getBothEntries(npmRegistry), ...getBothEntries(yarnRegistry)].filter(
+      Boolean
+    )
+  );
+}
+
+/**
+ * Helper function to get both entries needed, for a given ado npm registry
+ * @param registry registry url as a string
+ * @returns array of two urls - one with the trailing /registry/ and one without.
+ */
+function getBothEntries(registry?: string) {
+  if (!registry) return [];
+  const withoutTrailingRegistry = registry.replace(/\/registry\/?$/im, "/");
+  return [withoutTrailingRegistry, withoutTrailingRegistry + "registry/"];
 }

@@ -1,7 +1,7 @@
-import { Token } from "../lib/types";
 import fs from "fs";
 import os from "os";
 import path from "path";
+import { Token } from "../lib/types";
 import { logger } from "../logger/logger";
 
 type WriteNpmrcParams = {
@@ -13,42 +13,32 @@ type WriteNpmrcParams = {
 const authTokenDelimiter = ":_authToken=";
 
 export function writeNpmrc({ npmrcPath, registries, token }: WriteNpmrcParams) {
-  let npmrc = "";
+  let newNpmRc = ""
 
   logger.debug(`${registries.size} registries to be updated`);
 
   if (fs.existsSync(npmrcPath)) {
     logger.debug("found .npmrc in home directory");
 
-    npmrc = fs.readFileSync(npmrcPath, "utf-8");
+    const npmrc = fs.readFileSync(npmrcPath, "utf-8");
+
     for (const line of npmrc.split(/\n/)) {
       /**
        * Yarn 2 seems to add another entry to .npmrc for each URL with the trailing `registry/` removed.
        * Need to address that.
        */
-      const lineWithoutTrailingRegistry = line.replace(/\/registry\/?$/im, "/");
 
-      if (/^\/\//.test(line) || /^\/\//.test(lineWithoutTrailingRegistry)) {
+      if (/^\/\//.test(line)) {
         // starts with `//`
         const [url] = line.split(authTokenDelimiter);
-        const matchingRegistry = [...registries].find((reg) =>
-          reg.startsWith(url)
-        );
+        const matchingRegistry = [...registries].find((reg) => reg === url);
 
         if (matchingRegistry) {
           logger.debug(`Adding a token to the "${matchingRegistry}" entry`);
-          npmrc += `${url}${authTokenDelimiter}${token.access_token}\n`;
-
-          let urlWithoutTrailingRegistry = url.replace(/\/registry\/?$/im, "/");
-
-          if (urlWithoutTrailingRegistry !== url) {
-            // If there is a trailing `/registry/`
-            npmrc += `${urlWithoutTrailingRegistry}${authTokenDelimiter}${token.access_token}\n`;
-          }
-          
+          newNpmRc += url + authTokenDelimiter + token.access_token + "\n";
           registries.delete(matchingRegistry);
         } else {
-          npmrc += line + "\n";
+          newNpmRc += line + "\n";
         }
       }
     }
@@ -57,12 +47,14 @@ export function writeNpmrc({ npmrcPath, registries, token }: WriteNpmrcParams) {
   }
 
   // if registries are still left
-  npmrc = [...registries]
-    .map((registry) => registry + authTokenDelimiter + token?.access_token)
-    .join("/n");
+  for (const registry of registries.values()) {
+    logger.debug(`Adding a new entry "${registry}" with token`);
+    registries.delete(registry);
+    newNpmRc += registry + authTokenDelimiter + token?.access_token + "\n";
+  }
 
-  if (npmrc) {
+  if (newNpmRc) {
     logger.debug("Writing ~/.npmrc");
-    fs.writeFileSync(path.resolve(os.homedir(), ".npmrc"), npmrc);
+    fs.writeFileSync(path.resolve(os.homedir(), ".npmrc"), newNpmRc);
   }
 }
