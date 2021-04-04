@@ -14,17 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        name: 'Checking out source code'
-        with: 
+        name: "Checking out source code"
+        with:
           fetch-depth: 0
       - uses: actions/setup-node@v2
-        name: 'Setting up Node 14'
+        name: "Setting up Node 14"
         with:
           node-version: 14
       - run: yarn install
-        name: 'Installing dependencies with Yarn'
+        name: "Installing dependencies with Yarn"
       - run: yarn build
-        name: 'Building the code'
+        name: "Building the code"
 
   publish-npm-github:
     name: Publish to npm registry
@@ -32,27 +32,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        name: 'Checking out source code'
-        with: 
+        name: "Checking out source code"
+        with:
           fetch-depth: 0
       - run: yarn install
-        name: 'Installing dependencies with Yarn'
+        name: "Installing dependencies with Yarn"
       - uses: actions/setup-node@v2
-        name: 'Setting up .npmrc for Npm'
+        name: "Setting up .npmrc for Npm"
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
       - run: npm publish
-        name: 'Trying to publish to NPM'
+        name: "Trying to publish to NPM"
         continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - uses: actions/setup-node@v2
-        name: 'Setting up .npmrc for Github'
-        with:
-          node-version: 14
-          registry-url: https://npm.pkg.github.com/
-      - run: npm publish
-        continue-on-error: true
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
