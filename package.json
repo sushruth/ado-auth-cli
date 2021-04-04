@@ -1,9 +1,9 @@
 {
   "name": "ado-auth",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "displayName": "ADO Authenticator",
   "license": "MIT",
-  "main": "./bin/cli.js",
+  "main": "./bin/src/cli.js",
   "scripts": {
     "build": "tsc",
     "dev": "esr ./src/cli.ts",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/sushruth/ado-auth-cli"
   },
-  "bin": "./bin/cli.js",
+  "bin": "./bin/src/cli.js",
   "dependencies": {
     "chalk": "4.1.0",
     "dayjs": "1.10.4",
