@@ -41,7 +41,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: yarn
         name: 'Installing dependencies with Yarn'
-      - run: npm publish
+      - run: yarn publish
         name: 'Trying to publish to NPM'
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -62,6 +62,6 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - run: yarn
         name: 'Installing dependencies with Yarn'
-      - run: npm publish
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
