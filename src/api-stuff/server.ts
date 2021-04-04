@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import http from "http";
 import ora from "ora";
 import { SERVER_PORT, SERVER_TIMEOUT } from "../lib/constants";
@@ -49,8 +50,11 @@ export function listenForTokenFromTheWebsite(config: CliOptions) {
       return server.close();
     }, SERVER_TIMEOUT);
 
-    logger.debug(`Started server at http://localhost:${SERVER_PORT}`);
-    server.listen(SERVER_PORT);
+    logger.debug(
+      `Started server at`,
+      chalk.bold.green(`http://localhost:${config.port}`)
+    );
+    server.listen(config.port);
     spinner.start("listening to POST request from the ado-auth site");
   });
 }

@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import os from "os";
 import path from "path";
 import { auth } from "../api-stuff/auth";
@@ -27,13 +28,13 @@ export async function operate(config: CliOptions) {
   let token: Token | undefined = undefined;
 
   if (report.type === PrepareTypes.fetch) {
-    logger.debug("Trying to get auth token");
+    logger.debug(chalk.bold.magenta("Trying to get auth token"));
     token = await auth(rcPath, config);
   } else if (report.type === PrepareTypes.refetch) {
-    logger.debug("Trying to refetch auth token");
+    logger.debug(chalk.bold.magenta("Trying to refetch auth token"));
     token = await refetch(report.data, rcPath, config);
   } else if (report.type === PrepareTypes.noop) {
-    logger.debug("Valid token exists");
+    logger.debug(chalk.bold.green("Valid token exists"));
     token = report.data;
   }
 

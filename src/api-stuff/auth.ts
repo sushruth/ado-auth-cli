@@ -1,19 +1,23 @@
 import open from "opener";
-import { listenForTokenFromTheWebsite } from "./server";
-import { writeAdoRc } from "../lib/writeAdoRc";
-import { CliOptions } from "../lib/types";
-import { CLIENT_ID } from "../lib/constants";
 import { URL } from "url";
+import { CLIENT_ID } from "../lib/constants";
+import { CliOptions } from "../lib/types";
+import { writeAdoRc } from "../lib/writeAdoRc";
+import { listenForTokenFromTheWebsite } from "./server";
 
-function getUrl(clientId = CLIENT_ID, host: string) {
+function getUrl(clientId = CLIENT_ID, host: string, port: string) {
   const hostUrl = new URL(host);
   hostUrl.pathname = "/api/auth";
 
-  return `https://app.vssps.visualstudio.com/oauth2/authorize?client_id=${clientId}&response_type=Assertion&scope=vso.packaging&redirect_uri=${hostUrl.href}`;
+  return `https://app.vssps.visualstudio.com/oauth2/authorize?client_id=${clientId}&response_type=Assertion&scope=vso.packaging&redirect_uri=${
+    hostUrl.href
+  }&state=${encodeURIComponent(`{"port":"${port}"}`)}`;
 }
 
 export async function auth(rcPath: string, config: CliOptions) {
-  open(getUrl(config.clientId, config.host));
+  const url = getUrl(config.clientId, config.host, config.port);
+
+  open(url);
 
   const result = await listenForTokenFromTheWebsite(config);
 

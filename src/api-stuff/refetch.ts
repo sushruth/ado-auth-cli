@@ -24,6 +24,7 @@ export async function refetch(
 
   const result = await simpleFetchJson<AdoAuthApiResponse>(url.href, "POST", {
     token: data.refresh_token,
+    port: config.port,
   });
 
   if (result?.code === "SUCCESS") {

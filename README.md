@@ -14,7 +14,7 @@ Simplest way is to run this -
 npx ado-auth@latest
 ```
 
-If that doesnt work (probably because your token is expired) use this -
+If that doesnt work (probably because your token is expired or token doesnt exist) use this -
 
 ```
 npx ado-auth@latest --registry https://registry.npmjs.org/
@@ -32,11 +32,11 @@ Use this option when you have a custom host for the web app.
 ### `-p`, `--port`
 > Default: `35287`
 
-Use this option to specify which port to listen on from the host
+Use this option to specify which port to listen on from the host.
 
 ### `-c`, `-clientid`
 
-use this along with custom `--host` option to pass a different vistualstudio.com app client ID to use for authentication
+use this along with custom `--host` option to pass a different vistualstudio.com app client ID to use for authentication. This requires a custom host since the public host at [`ado-auth.vercel.app`](https://ado-auth.vercel.app) does not work with custom client ID.
 
 ### `-d`, `--debug`
 
