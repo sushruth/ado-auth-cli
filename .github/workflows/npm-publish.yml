@@ -43,6 +43,7 @@ jobs:
         name: 'Installing dependencies with Yarn'
       - run: yarn publish
         name: 'Trying to publish to NPM'
+        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - uses: actions/setup-node@v2
@@ -51,5 +52,6 @@ jobs:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
       - run: yarn publish
+        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
