@@ -21,7 +21,7 @@ jobs:
         name: 'Setting up Node 14'
         with:
           node-version: 14
-      - run: yarn
+      - run: yarn install
         name: 'Installing dependencies with Yarn'
       - run: yarn build
         name: 'Building the code'
@@ -35,14 +35,14 @@ jobs:
         name: 'Checking out source code'
         with: 
           fetch-depth: 0
+      - run: yarn install
+        name: 'Installing dependencies with Yarn'
       - uses: actions/setup-node@v2
         name: 'Setting up .npmrc for Npm'
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
-      - run: yarn install
-        name: 'Installing dependencies with Yarn'
-      - run: yarn publish
+      - run: npm publish
         name: 'Trying to publish to NPM'
         continue-on-error: true
         env:
@@ -52,7 +52,7 @@ jobs:
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-      - run: yarn publish
+      - run: npm publish
         continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
