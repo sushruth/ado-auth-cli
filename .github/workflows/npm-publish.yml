@@ -25,7 +25,7 @@ jobs:
       - run: yarn build
         name: 'Building the code'
 
-  publish-npm:
+  publish-npm-github:
     name: Publish to npm registry
     needs: build
     runs-on: ubuntu-latest
@@ -39,29 +39,17 @@ jobs:
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
-      - run: yarn
+      - run: yarn install
         name: 'Installing dependencies with Yarn'
       - run: yarn publish
         name: 'Trying to publish to NPM'
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-  publish-github:
-    name: Publish to github registry
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        name: 'Checking out source code'
-        with: 
-          fetch-depth: 0
       - uses: actions/setup-node@v2
         name: 'Setting up .npmrc for Github'
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-      - run: yarn
-        name: 'Installing dependencies with Yarn'
       - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
