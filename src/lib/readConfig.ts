@@ -16,7 +16,9 @@ function getRegistry(tool: Exclude<keyof typeof commands, "yarn2">) {
 
   if (tool === "yarn") {
     const version = execSync("yarn -v", { encoding: "utf8" })?.trim();
-    if (/2\.\d*\.\d*/i.test(version)) {
+    const match = version.match(/(\d+)\.\d*\.\d*/i)
+
+    if (Number(match?.[1]) >= 2) {
       toolToUse = "yarn2";
     }
   }
