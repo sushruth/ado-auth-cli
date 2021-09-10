@@ -16,7 +16,7 @@ function getRegistry(tool: Exclude<keyof typeof commands, "yarn2">) {
 
   if (tool === "yarn") {
     const version = execSync("yarn -v", { encoding: "utf8" })?.trim();
-    const match = version.match(/(\d+)\.\d*\.\d*/i)
+    const match = version.match(/(\d+)\.*/i);
 
     if (Number(match?.[1]) >= 2) {
       toolToUse = "yarn2";
@@ -51,22 +51,36 @@ function getRegistry(tool: Exclude<keyof typeof commands, "yarn2">) {
 }
 
 export function readConfig() {
-  let npmRegistry = getRegistry("npm");
-  let yarnRegistry = getRegistry("yarn");
+  let npmRegistry: string | undefined;
+
+  try {
+    npmRegistry = getRegistry("npm");
+  } catch (error) {
+    logger.debug("running npm failed - ", error.message);
+  }
+
+  let yarnRegistry: string | undefined;
+
+  try {
+    yarnRegistry = getRegistry("yarn");
+  } catch (error) {
+    logger.debug("running yarn failed - ", error.message);
+  }
 
   return new Set(
-    [...getBothEntries(npmRegistry), ...getBothEntries(yarnRegistry)].filter(
-      Boolean
-    )
+    [
+      ...getRegistryEntries(npmRegistry),
+      ...getRegistryEntries(yarnRegistry),
+    ].filter(Boolean)
   );
 }
 
 /**
- * Helper function to get both entries needed, for a given ado npm registry
+ * Helper function to get registry entries needed, for a given ado npm registry
  * @param registry registry url as a string
- * @returns array of two urls - one with the trailing /registry/ and one without.
+ * @returns array of two urls - one with the trailing `/` and one without.
  */
-function getBothEntries(registry?: string) {
+function getRegistryEntries(registry?: string) {
   if (!registry) return [];
   const withoutTrailingRegistry = registry.replace(/\/registry\/?$/im, "/");
   return [withoutTrailingRegistry, withoutTrailingRegistry + "registry/"];
