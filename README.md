@@ -1,4 +1,9 @@
-# ADO Authenticator
+# DEPRECATED
+##  This package has been moved to a monorepo here - https://github.com/sushruth/ado-auth
+
+---
+
+## ADO Authenticator
 
 This package `ado-auth` aims to help in authenticating with Azure DevOps npm feeds. This supports `npm`, `yarn`, `pnpm` and `yarn2`.
 
